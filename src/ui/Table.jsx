@@ -1,5 +1,6 @@
 import { createContext, useContext } from "react";
 import styled from "styled-components";
+import Empty from "./Empty";
 
 const StyledTable = styled.div`
   border: 1px solid var(--color-grey-200);
@@ -52,13 +53,6 @@ const Footer = styled.footer`
   }
 `;
 
-const Empty = styled.p`
-  font-size: 1.6rem;
-  font-weight: 500;
-  text-align: center;
-  margin: 2.4rem;
-`;
-
 const TableContext = createContext();
 
 const Table = ({ children, columns }) => {
@@ -89,7 +83,8 @@ const Row = ({ children }) => {
   );
 };
 
-const Body = ({ data, render }) => {
+const Body = ({ data, render, resourceName }) => {
+  if (!data.length) return <Empty resourceName={resourceName} />;
   return <StyledBody>{data.map((el) => render(el))}</StyledBody>;
 };
 

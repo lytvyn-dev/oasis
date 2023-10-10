@@ -1,6 +1,20 @@
 import { getToday } from "../utils/helpers";
 import supabase from "./supabase";
 
+export const getBookings = async () => {
+  // fetching related field also by addind cabins(*), guests(*§)
+  let { data: bookings, error } = await supabase
+    .from("bookings")
+    .select("*, cabins(name), guests(fullName,email)");
+
+  if (error) {
+    console.error(error);
+    throw new Error("Could not get bookings!");
+  }
+
+  return bookings;
+};
+
 export async function getBooking(id) {
   const { data, error } = await supabase
     .from("bookings")

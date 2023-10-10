@@ -1,13 +1,17 @@
 import PageLayout from "../ui/PageLayout";
-
-import CabinsHeader from "../features/cabins/CabinsHeader";
-import CabinTable from "../features/cabins/CabinTable";
 import AddCabin from "../features/cabins/AddCabin";
+import Row from "../ui/Row";
+import Heading from "../ui/Heading";
+import CabinFilterOperatins from "../features/cabins/CabinFilterOpearations";
+import CabinTable from "../features/cabins/CabinTable";
 
 function Cabins() {
   return (
     <PageLayout>
-      <CabinsHeader />
+      <Row type="horizontal">
+        <Heading as="h1">All cabins</Heading>
+        <CabinFilterOperatins />
+      </Row>
       <CabinTable />
       <AddCabin />
     </PageLayout>
