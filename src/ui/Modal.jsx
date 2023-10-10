@@ -1,8 +1,16 @@
 import styled from "styled-components";
 
 import { HiXMark } from "react-icons/hi2";
-
-import ReactDOM from "react-dom";
+import { createPortal } from "react-dom";
+import {
+  cloneElement,
+  createContext,
+  createElement,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 const StyledModal = styled.div`
   position: fixed;
@@ -51,25 +59,55 @@ const CloseButton = styled.button`
   }
 `;
 
-const Modal = ({ children, onClose }) => {
-  return (
-    <>
-      {ReactDOM.createPortal(
-        <Overlay onClick={onClose} />,
-        document.getElementById("backdrop-overlay")
-      )}
+const ModalContex = createContext();
 
-      {ReactDOM.createPortal(
-        <StyledModal>
-          {children}
-          <CloseButton onClick={onClose}>
-            <HiXMark />
-          </CloseButton>
-        </StyledModal>,
-        document.getElementById("modal-form")
-      )}
-    </>
+const Modal = ({ children }) => {
+  const [openName, setOpenName] = useState("");
+
+  const close = () => setOpenName("");
+  const open = setOpenName;
+
+  return <ModalContex.Provider value={{ openName, close, open }}>{children}</ModalContex.Provider>;
+};
+
+const Open = ({ children, opens: openWindowName }) => {
+  const { open } = useContext(ModalContex);
+
+  return cloneElement(children, { onClick: () => open(openWindowName) });
+};
+
+const Window = ({ children, name }) => {
+  const { close, openName } = useContext(ModalContex);
+  const modalRef = useRef();
+
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (modalRef.current && !modalRef.current.contains(e.target)) {
+        close();
+      }
+    };
+
+    document.addEventListener("click", handleClick, true);
+
+    return () => document.removeEventListener("click", handleClick);
+  }, []);
+
+  if (name !== openName) return;
+
+  return createPortal(
+    <Overlay>
+      <StyledModal ref={modalRef}>
+        {cloneElement(children, { onClose: () => close() })}
+        <CloseButton onClick={close}>
+          <HiXMark />
+        </CloseButton>
+      </StyledModal>
+    </Overlay>,
+    document.getElementById("modal")
   );
 };
+
+Modal.Open = Open;
+Modal.Window = Window;
 
 export default Modal;

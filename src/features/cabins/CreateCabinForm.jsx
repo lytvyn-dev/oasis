@@ -119,7 +119,13 @@ function CreateCabinForm({ onClose, edit }) {
       </FormRow>
 
       <FormRow>
-        <Button variation="secondary" disabled={formIsWorking} size="medium" type="reset">
+        <Button
+          onClick={() => onClose?.()}
+          variation="secondary"
+          disabled={formIsWorking}
+          size="medium"
+          type="reset"
+        >
           Cancel
         </Button>
         {formIsWorking && (

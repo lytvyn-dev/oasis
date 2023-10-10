@@ -1,11 +1,10 @@
 import styled from "styled-components";
+import { useSearchParams } from "react-router-dom";
 
 import CabinRow from "./CabinRow";
 import Spinner from "../../ui/Spinner";
 
 import { useCabins } from "./useCabins";
-
-import { useState } from "react";
 
 const Table = styled.div`
   border: 1px solid var(--color-grey-200);
@@ -33,6 +32,34 @@ const TableHeader = styled.header`
 const CabinTable = () => {
   const { data: cabins, isLoading } = useCabins();
 
+  const [searchParams] = useSearchParams();
+  const filterdParams = searchParams.get("discount");
+
+  let filtredCabins;
+
+  switch (filterdParams) {
+    case "all":
+      filtredCabins = cabins;
+      break;
+    case "no-discount":
+      filtredCabins = cabins?.filter((cabin) => cabin.discount === 0);
+      break;
+    case "with-discount":
+      filtredCabins = cabins?.filter((cabin) => cabin.discount > 0);
+      break;
+
+    default:
+      filtredCabins = cabins;
+  }
+
+  //
+
+  const sortBy = searchParams.get("sortBy") || "startDate-asc";
+  const [field, directiion] = sortBy.split("-");
+  // якщо нам потрібно у зростанні ? * 1 : * -1
+  const modifier = directiion === "asc" ? 1 : -1;
+  const sortedCabins = filtredCabins?.sort((a, b) => (a[field] - b[field]) * modifier);
+
   return (
     <Table role="table">
       <TableHeader role="row">
@@ -45,7 +72,7 @@ const CabinTable = () => {
       </TableHeader>
       {isLoading && <Spinner />}
       {!isLoading &&
-        cabins.map((el) => {
+        sortedCabins?.map((el) => {
           return <CabinRow key={el.id} data={el} />;
         })}
     </Table>

@@ -1,9 +1,10 @@
 import Heading from "../../ui/Heading";
 import Row from "../../ui/Row";
-import Select from "../../ui/Select";
+import Select from "../../ui/SortBy";
 import ButtonText from "../../ui/ButtonText";
 
 import styled from "styled-components";
+import CabinFilterOperatins from "./CabinFilterOpearations";
 
 const ButtonsBox = styled.div`
   display: flex;
@@ -25,16 +26,7 @@ function CabinsHeader() {
   return (
     <Row type="horizontal">
       <Heading as="h1">All cabins</Heading>
-
-      <ButtonsBox>
-        <Div>
-          <ButtonText>All</ButtonText>
-          <ButtonText>No discount</ButtonText>
-          <ButtonText>With discount</ButtonText>
-        </Div>
-
-        <Select type="white">Sort</Select>
-      </ButtonsBox>
+      <CabinFilterOperatins />
     </Row>
   );
 }

@@ -1,4 +1,5 @@
 import styled, { css } from "styled-components";
+import useUrl from "../hooks/useUrl";
 
 const StyledFilter = styled.div`
   border: 1px solid var(--color-grey-100);
@@ -15,7 +16,7 @@ const FilterButton = styled.button`
   border: none;
 
   ${(props) =>
-    props.active &&
+    props.$active &&
     css`
       background-color: var(--color-brand-600);
       color: var(--color-brand-50);
@@ -33,3 +34,32 @@ const FilterButton = styled.button`
     color: var(--color-brand-50);
   }
 `;
+
+function Filter({ filtredValue, options }) {
+  const { setUrlParams, searchParams } = useUrl();
+
+  const currentParams = searchParams.get(filtredValue) || options[0].value;
+
+  const handleClick = (value) => {
+    setUrlParams(filtredValue, value);
+  };
+
+  return (
+    <StyledFilter>
+      {options.map((option) => {
+        return (
+          <FilterButton
+            $active={currentParams === option.value}
+            disabled={currentParams === option.value}
+            key={option.value}
+            onClick={() => handleClick(option.value)}
+          >
+            {option.label}
+          </FilterButton>
+        );
+      })}
+    </StyledFilter>
+  );
+}
+
+export default Filter;

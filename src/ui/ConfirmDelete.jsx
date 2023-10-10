@@ -3,10 +3,11 @@ import Button from "./Button";
 import Heading from "./Heading";
 
 const StyledConfirmDelete = styled.div`
-  width: 40rem;
+  max-width: 60rem;
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
+  padding: 2rem;
 
   & p {
     color: var(--color-grey-500);
@@ -20,20 +21,20 @@ const StyledConfirmDelete = styled.div`
   }
 `;
 
-function ConfirmDelete({ resourceName, onConfirm, disabled }) {
+function ConfirmDelete({ resourceName, onConfirm, disabled, onClose }) {
   return (
     <StyledConfirmDelete>
       <Heading as="h3">Delete {resourceName}</Heading>
       <p>
-        Are you sure you want to delete this {resourceName} permanently? This
-        action cannot be undone.
+        Are you sure you want to delete this {resourceName} permanently? This action cannot be
+        undone.
       </p>
 
       <div>
-        <Button variation="secondary" disabled={disabled}>
+        <Button onClick={onClose} size="medium" variation="secondary" disabled={disabled}>
           Cancel
         </Button>
-        <Button variation="danger" disabled={disabled}>
+        <Button onClick={onConfirm} size="medium" variation="danger" disabled={disabled}>
           Delete
         </Button>
       </div>
